@@ -20,6 +20,7 @@ public class Judge extends SubsystemBase{
     public boolean isPreparing = false;
     public boolean isManualDrive = true;
     public boolean isManualRotate = false;
+    public boolean tableOn = false;
 
     // public void isForwardDetecting(){
     //     if (Constants.yValue >= 0){

@@ -10,23 +10,25 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Talon;
 
 import edu.wpi.first.networktables.*;
+import frc.robot.Robot;
+
 
 public class Networktable extends SubsystemBase {
 
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    NetworkTable put = inst.getTable("tape");
-    NetworkTable ball = inst.getTable("ball");
-    NetworkTableEntry ballPositioneEntry = ball.getEntry("Y");
-    NetworkTableEntry upTapeEntry = put.getEntry("Y"); 
-    NetworkTableEntry downTapeEntry = put.getEntry("X");
-    NetworkTableEntry distanceEntry = put.getEntry("distance");
-    NetworkTableEntry angleEntry = put.getEntry("angle");
-    NetworkTableEntry midEntry = put.getEntry("midpoint"); 
-  
     // modify needed check the networktale entry nuner
   
-    NetworkTable sender = inst.getTable("isNeeded");
-    NetworkTableEntry isNeeded = sender.getEntry("X");
+    NetworkTable sender = inst.getTable("vision");
+    NetworkTableEntry isNeeded = sender.getEntry("isNeeded");//send is needed
+    NetworkTableEntry shooterAngle = sender.getEntry("shooterAngle");//send shooter angle
+    NetworkTableEntry adjustAngle = sender.getEntry("toss_adjustment");//读取视觉角度 （炮台需要调整的角度）
+    NetworkTableEntry horizontalDistance = sender.getEntry("a_adjustment");//读取车需要横向移动的距离
+    NetworkTableEntry targetDistance = sender.getEntry("distance");//读取车距离洞口的距离
+
+    public int shooterTargetAngle;
+    public int horizontalTargetDistance;
+
+    double x =0;//isNeeded
 
   public Networktable() {
     inst.startClientTeam(7280);
@@ -35,6 +37,16 @@ public class Networktable extends SubsystemBase {
 
   public void getTableData() {
 
+    shooterTargetAngle = (int)adjustAngle.getDouble(0.0);
+    horizontalTargetDistance = (int)horizontalDistance.getDouble(0.0);
+
+    if(Robot.judge.tableOn){
+      x = 1.0;
+    } else {
+      x=0.0;
+    }
+    isNeeded.setDouble(x);
+    shooterAngle.setDouble(Robot.shooter.shooterCurrentAngle);
   }
 
   @Override

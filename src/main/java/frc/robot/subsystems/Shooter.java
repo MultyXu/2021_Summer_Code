@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -28,6 +29,9 @@ public class Shooter extends SubsystemBase {
   public static TalonFX shooterAngleMotor = new TalonFX(Constants.shooterAngleMotor);
 
   Solenoid ballDeliverSolenoid = new Solenoid(Constants.ballDeliverSolenoid);
+
+  public AnalogInput shooterAngle = new AnalogInput (1);
+  public int shooterCurrentAngle;
 
   public int targetPosition;
   public Shooter() {
@@ -97,6 +101,8 @@ public void angleMotorStop(){
     SmartDashboard.putNumber("flywheelTargetVelocity", 5000);
     SmartDashboard.putNumber("shooterAnglePosition", shooterAngleMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("shooterAngleVelocity", shooterAngleMotor.getSelectedSensorVelocity());
+
+    shooterCurrentAngle = shooterAngle.getValue();
     
   }
 }

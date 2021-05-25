@@ -137,9 +137,9 @@ public class Base extends SubsystemBase {
     double xValue = Robot.judge.deadBand(Robot.oi.motionStick.getX());
     double yValue = Robot.judge.deadBand(Robot.oi.motionStick.getY());
     if (Robot.judge.isManualDrive){
-      // Robot.base.drive(xValue,yValue);
-      leftMasterMotor.set(ControlMode.PercentOutput, xValue);
-      rightMasterMotor.set(ControlMode.PercentOutput, yValue);
+      Robot.base.drive(xValue,yValue);
+      // leftMasterMotor.set(ControlMode.PercentOutput, xValue);
+      // rightMasterMotor.set(ControlMode.PercentOutput, yValue);
     }
   }
 }

@@ -23,7 +23,8 @@ public class Climb extends SubsystemBase {
 
   public void startClimb(){
     climbMasterMotor.setSpeed(Constants.climbSpeed);
-    climbSlaveMotor.setSpeed(Constants.climbSpeed);
+    double masterMotorVelocity = climbMasterMotor.getSpeed();
+    climbSlaveMotor.setSpeed(masterMotorVelocity);
   }
 
   public void stopClimb(){

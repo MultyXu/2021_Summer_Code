@@ -9,6 +9,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,6 +23,8 @@ public class Fort extends SubsystemBase {
   public static TalonFX rotateMotor = new TalonFX(Constants.rotateMotor);
 
   public double fortRotateSpeed;
+
+  DigitalInput fortAngle = new DigitalInput(0);
 
   public Fort() {
     Constants.initFalconPID(fortController, 1);
@@ -77,6 +81,10 @@ public class Fort extends SubsystemBase {
       }
     }
     SmartDashboard.putNumber("POV", Robot.oi.motionStick.getPOV());
+
+    SmartDashboard.putNumber("digital", fortAngle.getAnalogTriggerTypeForRouting());
+
+    
   }
 
 
