@@ -102,8 +102,8 @@ public void angleMotorStop(){
     SmartDashboard.putNumber("flywheelVelocity", shooterMasterMotor.getSelectedSensorVelocity());
     if (Robot.judge.isPreparing){
       configVelocityPID();
-      shooterMasterMotor.set(ControlMode.Velocity, 10000);
-      shooterSlaveMotor.set(ControlMode.Velocity, 10000);
+      shooterMasterMotor.set(ControlMode.Velocity, 44000);
+      shooterSlaveMotor.set(ControlMode.Velocity, 44000);
     } else {
       shooterMasterMotor.set(ControlMode.PercentOutput, 0);
       shooterSlaveMotor.set(ControlMode.PercentOutput, 0);

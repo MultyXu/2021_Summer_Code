@@ -28,7 +28,7 @@ public class Base extends SubsystemBase {
   public static TalonFX rightMasterMotor = new TalonFX(Constants.rightMasterMotor);
   public static TalonFX rightSlaveMotor = new TalonFX(Constants.rightSlaveMotor);
 
-  DoubleSolenoid gearChanger = new DoubleSolenoid(0,1,2);
+  DoubleSolenoid gearChanger = new DoubleSolenoid(0,0,1);
   
 
   double leftSpeed;

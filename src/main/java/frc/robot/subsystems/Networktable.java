@@ -22,12 +22,12 @@ public class Networktable extends SubsystemBase {
     NetworkTable sender = inst.getTable("vision");
     NetworkTableEntry isNeeded = sender.getEntry("isNeeded");//send is needed
     NetworkTableEntry shooterAngle = sender.getEntry("shooterAngle");//send shooter angle
-    NetworkTableEntry adjustAngle = sender.getEntry("toss_adjustment");//读取视觉角度 （炮台需要调整的角度）
-    NetworkTableEntry horizontalDistance = sender.getEntry("a_adjustment");//读取车需要横向移动的距离
+    NetworkTableEntry shooterAdjustAngle = sender.getEntry("toss_adjustment");//读取视觉角度 （炮台需要调整的角度）
+    NetworkTableEntry fortAdjustAngle = sender.getEntry("a_adjustment");//读取车需要横向移动的距离
     NetworkTableEntry targetDistance = sender.getEntry("distance");//读取车距离洞口的距离
 
     public int shooterTargetAngle;
-    public int horizontalTargetDistance;
+    public int fortTargetAngle;
     public int distance;
 
     double x =0;//isNeeded
@@ -39,8 +39,8 @@ public class Networktable extends SubsystemBase {
 
   public void getTableData() {
 
-    shooterTargetAngle = (int)adjustAngle.getDouble(3.0);
-    horizontalTargetDistance = (int)horizontalDistance.getDouble(3.0);
+    shooterTargetAngle = (int)shooterAdjustAngle.getDouble(3.0);
+    fortTargetAngle = (int)fortAdjustAngle.getDouble(3.0);
     distance = (int)targetDistance.getDouble(3.0);
 
     if(Robot.judge.tableOn){
@@ -58,7 +58,7 @@ public class Networktable extends SubsystemBase {
     getTableData();
 
     SmartDashboard.putNumber("shooter", shooterTargetAngle);
-    SmartDashboard.putNumber("fort", horizontalTargetDistance);
+    SmartDashboard.putNumber("fort", fortTargetAngle);
     SmartDashboard.putNumber("base", distance);
     SmartDashboard.putNumber("tableTable", x);
 
