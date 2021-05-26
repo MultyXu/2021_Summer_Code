@@ -20,7 +20,7 @@ public class Test2 extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Robot.shooter.decreaseAngleTest(-500);
+    Robot.shooter.decreaseAngleTest(0);
 }
 
   // Called once the command ends or is interrupted.
@@ -32,6 +32,6 @@ public class Test2 extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

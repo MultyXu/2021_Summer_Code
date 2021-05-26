@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,7 +25,7 @@ public class Fort extends SubsystemBase {
 
   public double fortRotateSpeed;
 
-  DigitalInput fortAngle = new DigitalInput(0);
+  
 
   public Fort() {
     Constants.initFalconPID(fortController, 1);
@@ -82,9 +83,15 @@ public class Fort extends SubsystemBase {
     }
     SmartDashboard.putNumber("POV", Robot.oi.motionStick.getPOV());
 
-    SmartDashboard.putNumber("digital", fortAngle.getAnalogTriggerTypeForRouting());
+    if (Robot.judge.isShooting){
+      rotateMotor.set(ControlMode.PercentOutput, 0.3);
+    } else if (Robot.judge.isIntaking){
+      rotateMotor.set(ControlMode.PercentOutput, 0.3);
+    } else {
+      rotateMotor.set(ControlMode.PercentOutput, 0);
+    }
 
-    
+
   }
 
 

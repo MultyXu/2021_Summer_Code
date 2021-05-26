@@ -15,22 +15,25 @@ import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
   /** Creates a new SpinningCollect. */
-  public static Spark climbMasterMotor = new Spark(Constants.climbMasterMotor);
-  public static Spark climbSlaveMotor = new Spark(Constants.climbSlaveMotor);
+  // public static Spark climbMasterMotor = new Spark(Constants.climbMasterMotor);
+  // public static Spark climbSlaveMotor = new Spark(Constants.climbSlaveMotor);
 
+  public Spark spark = new Spark(0);
   public Climb() {
   }
 
   public void startClimb(){
-    climbMasterMotor.setSpeed(Constants.climbSpeed);
-    double masterMotorVelocity = climbMasterMotor.getSpeed();
-    climbSlaveMotor.setSpeed(masterMotorVelocity);
+    // climbMasterMotor.setSpeed(Constants.climbSpeed);
+    // double masterMotorVelocity = climbMasterMotor.getSpeed();
+    // climbSlaveMotor.setSpeed(masterMotorVelocity);
+    spark.set(0.5);
   }
 
   public void stopClimb(){
-    double position = climbMasterMotor.getPosition();
-    climbMasterMotor.setPosition(position);
-    climbSlaveMotor.setPosition(position);
+    // double position = climbMasterMotor.getPosition();
+    // climbMasterMotor.setPosition(position);
+    // climbSlaveMotor.setPosition(position);
+    spark.set(0);
   }
 
   @Override

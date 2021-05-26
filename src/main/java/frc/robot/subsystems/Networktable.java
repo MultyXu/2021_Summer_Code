@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.networktables.*;
 import frc.robot.Robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Networktable extends SubsystemBase {
 
@@ -27,6 +28,7 @@ public class Networktable extends SubsystemBase {
 
     public int shooterTargetAngle;
     public int horizontalTargetDistance;
+    public int distance;
 
     double x =0;//isNeeded
 
@@ -37,8 +39,9 @@ public class Networktable extends SubsystemBase {
 
   public void getTableData() {
 
-    shooterTargetAngle = (int)adjustAngle.getDouble(0.0);
-    horizontalTargetDistance = (int)horizontalDistance.getDouble(0.0);
+    shooterTargetAngle = (int)adjustAngle.getDouble(3.0);
+    horizontalTargetDistance = (int)horizontalDistance.getDouble(3.0);
+    distance = (int)targetDistance.getDouble(3.0);
 
     if(Robot.judge.tableOn){
       x = 1.0;
@@ -53,6 +56,11 @@ public class Networktable extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     getTableData();
+
+    SmartDashboard.putNumber("shooter", shooterTargetAngle);
+    SmartDashboard.putNumber("fort", horizontalTargetDistance);
+    SmartDashboard.putNumber("base", distance);
+    SmartDashboard.putNumber("tableTable", x);
 
     //show data
   }

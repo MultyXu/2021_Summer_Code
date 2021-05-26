@@ -4,12 +4,13 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 
-public class ShootBall extends CommandBase {
+public class ClimbTest extends CommandBase {
   /** Creates a new Giveball. */
-  public ShootBall() {
+  public ClimbTest() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -20,17 +21,18 @@ public class ShootBall extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Robot.judge.changeShootState();
+    Robot.climb.startClimb();
 }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    Robot.climb.stopClimb();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

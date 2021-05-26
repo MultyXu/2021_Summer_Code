@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 public class Intake extends SubsystemBase {
   /** Creates a new SpinningCollect. */
@@ -24,9 +25,10 @@ public class Intake extends SubsystemBase {
   }
 
   public void intake(){
+    intakeMotor.set(ControlMode.PercentOutput, -0.5);
     intakeMasterSolenoid.set(true);
     intakeSlaveSolenoid.set(true);
-    intakeMotor.set(ControlMode.PercentOutput, 1);
+
   }
 
   public void stopIntake(){
@@ -37,5 +39,12 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (Robot.oi.motionStick.getRawButton(2)){
+      intakeMotor.set(ControlMode.PercentOutput, -0.5);
+      Robot.judge.isIntaking = true;
+    } else {
+      intakeMotor.set(ControlMode.PercentOutput, 0);
+      Robot.judge.isIntaking = false;
+    }
   }
 }

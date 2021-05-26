@@ -82,7 +82,7 @@ public final class Constants {
     public final static int shooterAngleMotor = 8;
 
     //intake
-    public final static int intakeMotor = 11;
+    public final static int intakeMotor = 14;
 
     //climb
     public final static int climbMasterMotor = 12;
@@ -121,4 +121,9 @@ public final class Constants {
 
     //Constants
     public final static int climbSpeed = 1000;
+
+
+    //auto 
+    //phase 1
+    public final static int phase1Forward = 10000;
 }

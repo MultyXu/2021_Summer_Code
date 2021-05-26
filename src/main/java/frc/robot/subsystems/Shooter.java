@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -30,8 +31,8 @@ public class Shooter extends SubsystemBase {
 
   Solenoid ballDeliverSolenoid = new Solenoid(Constants.ballDeliverSolenoid);
 
-  public AnalogInput shooterAngle = new AnalogInput (1);
-  public int shooterCurrentAngle;
+  AnalogPotentiometer shooterAngle = new AnalogPotentiometer(0, 720, 0);
+  public int shooterCurrentAngle = 0;
 
   public int targetPosition;
   public Shooter() {
@@ -69,8 +70,17 @@ public class Shooter extends SubsystemBase {
   }
 
   public void increaseAngleTest(int _position){
-    Constants.setFalconPID(shooterAngleMotor, 0, 0.018, 0, 0);
-    shooterAngleMotor.set(ControlMode.Position, _position);
+    if (shooterAngleMotor.getSelectedSensorPosition()<_position+3000){
+      Constants.setFalconPID(shooterAngleMotor, 0, 0.1, 0, 0);
+      shooterAngleMotor.set(ControlMode.Position, _position);
+      SmartDashboard.putBoolean("test", true);
+    } else {
+      Constants.setFalconPID(shooterAngleMotor, 0, 0.02, 0, 0);
+      shooterAngleMotor.set(ControlMode.Position, _position);
+      SmartDashboard.putBoolean("test", false);
+    }
+
+
 }
 
 
@@ -101,8 +111,13 @@ public void angleMotorStop(){
     SmartDashboard.putNumber("flywheelTargetVelocity", 5000);
     SmartDashboard.putNumber("shooterAnglePosition", shooterAngleMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("shooterAngleVelocity", shooterAngleMotor.getSelectedSensorVelocity());
-
-    shooterCurrentAngle = shooterAngle.getValue();
     
+    if (Robot.judge.isShooting){
+      ballDeliverMotor.set(ControlMode.PercentOutput, 0.1);
+    } else {
+      ballDeliverMotor.set(ControlMode.PercentOutput, 0);
+    }
+
+    shooterCurrentAngle = (int)shooterAngle.get();
   }
 }

@@ -28,9 +28,13 @@ public class Base extends SubsystemBase {
   Solenoid rightGearChanger = new Solenoid(Constants.rightGearChanger);
   Solenoid leftGearChanger = new Solenoid (Constants.leftGearChanger);
 
+  Compressor compressor = new Compressor(1);
+
 
   double leftSpeed;
   double rightSpeed;
+
+  int i =0;
 
   public Base() {
     //init PID
@@ -50,10 +54,10 @@ public class Base extends SubsystemBase {
     rightSlaveMotor.follow(rightMasterMotor);
 
     //set motor mode
-    leftMasterMotor.setNeutralMode(NeutralMode.Brake);
-    leftSlaveMotor.setNeutralMode(NeutralMode.Brake);
-    rightMasterMotor.setNeutralMode(NeutralMode.Brake);
-    rightSlaveMotor.setNeutralMode(NeutralMode.Brake);
+    leftMasterMotor.setNeutralMode(NeutralMode.Coast);
+    leftSlaveMotor.setNeutralMode(NeutralMode.Coast);
+    rightMasterMotor.setNeutralMode(NeutralMode.Coast);
+    rightSlaveMotor.setNeutralMode(NeutralMode.Coast);
   }
 
   // public void initDefaultCommand(){
@@ -65,25 +69,25 @@ public class Base extends SubsystemBase {
     SmartDashboard.putNumber("y", y_value);
     setVelocityPID();
     if (Robot.judge.isForward){
-      if (y_value>=0){
-        leftSpeed = ((-y_value - x_value) * Constants.speedConstant);
-        rightSpeed = ((-y_value + x_value) * Constants.speedConstant);
+      if (y_value<=0){
+        leftSpeed = (-y_value + x_value) * Constants.speedConstant;
+        rightSpeed = (-y_value - x_value) * Constants.speedConstant;
         SmartDashboard.putBoolean("drive test", true);
       } else {
         SmartDashboard.putBoolean("drive test", false);
-        leftSpeed = (-y_value + x_value) * Constants.speedConstant;
-      rightSpeed = (-y_value - x_value) * Constants.speedConstant;
+        leftSpeed = (-y_value - x_value) * Constants.speedConstant;
+        rightSpeed = (-y_value + x_value) * Constants.speedConstant;
       }
 
     }else{
-      if (y_value>=0){
-        leftSpeed = ((y_value - x_value) * Constants.speedConstant);
-        rightSpeed = ((y_value + x_value) * Constants.speedConstant);
+      if (y_value<=0){
+        leftSpeed = ((y_value + x_value) * Constants.speedConstant);
+        rightSpeed = ((y_value - x_value) * Constants.speedConstant);
         SmartDashboard.putBoolean("drive test", true);
       } else {
         SmartDashboard.putBoolean("drive test", false);
-        leftSpeed = (y_value + x_value) * Constants.speedConstant;
-      rightSpeed = (y_value - x_value) * Constants.speedConstant;
+        leftSpeed = (y_value - x_value) * Constants.speedConstant;
+      rightSpeed = (y_value + x_value) * Constants.speedConstant;
       }
     } 
     speedSetup();
@@ -100,12 +104,27 @@ public class Base extends SubsystemBase {
     Constants.setFalconPID(rightMasterMotor, 0, 0.05, 0, 0);
   }
 
+  public void setPositionPID(){
+    Constants.setFalconPID(leftMasterMotor, 0, 0.1, 0, 0);
+    Constants.setFalconPID(rightMasterMotor, 0, 0.1, 0, 0);
+  }
+
   public void turn(int angle){
     int requiredDistance=angle;
-    leftMasterMotor.setSelectedSensorPosition(0);
-    rightMasterMotor.setSelectedSensorPosition(0);
+    setPositionPID();
     leftMasterMotor.set(TalonFXControlMode.Position, requiredDistance);
     rightMasterMotor.set(TalonFXControlMode.Position, -requiredDistance);
+  }
+
+  public void forward(int _distance){
+    setPositionPID();
+    leftMasterMotor.set(TalonFXControlMode.Position, _distance);
+    rightMasterMotor.set(TalonFXControlMode.Position, _distance);
+  }
+
+  public void resetSensor(){
+    leftMasterMotor.setSelectedSensorPosition(0);
+    rightMasterMotor.setSelectedSensorPosition(0);
   }
 
   public void setSpeedMode(){
@@ -117,6 +136,64 @@ public class Base extends SubsystemBase {
       rightGearChanger.set(false);
     }
   }
+
+  public void stopMotor(){
+    leftMasterMotor.set(ControlMode.PercentOutput, 0);
+    rightMasterMotor.set(ControlMode.PercentOutput, 0);
+  }
+
+  public boolean disDrive(int dis, int angle, int speed){
+    int tempPos; 
+    boolean result; 
+    tempPos = dis + angle;
+    if (Math.abs(leftMasterMotor.getSelectedSensorPosition())<Math.abs(tempPos)){
+      if (tempPos<0){
+        leftMasterMotor.set(ControlMode.Velocity, -speed);
+      } else {
+        leftMasterMotor.set(ControlMode.Velocity, speed);
+      }
+
+      result = false;
+    } else {
+      leftMasterMotor.set(ControlMode.Velocity, 0);
+      result = true; 
+    }
+
+    tempPos = dis - angle;
+    if (Math.abs(rightMasterMotor.getSelectedSensorPosition())<Math.abs(tempPos)){
+      if(tempPos<0){
+        rightMasterMotor.set(ControlMode.Velocity, -speed);
+      } else {
+        rightMasterMotor.set(ControlMode.Velocity, speed);
+      }
+
+      return false;
+    } else {
+      rightMasterMotor.set(ControlMode.Velocity, 0);
+      return result & true;
+    }
+  }
+  public void test(){
+    SmartDashboard.putNumber("i", i);
+    if (i<2){
+      switch(i){
+        case 0:
+          if(disDrive(10000, 0, 1000)){
+            i++;
+            resetSensor();
+          }
+          break;
+        
+        case 1:
+          if(disDrive(-10000,0,1000)){
+            i++;
+            resetSensor();
+          }
+          break;    
+      }
+    }
+  }
+
 
   @Override
   public void periodic() {
@@ -141,5 +218,7 @@ public class Base extends SubsystemBase {
       // leftMasterMotor.set(ControlMode.PercentOutput, xValue);
       // rightMasterMotor.set(ControlMode.PercentOutput, yValue);
     }
+
+    // compressor.enabled();
   }
 }

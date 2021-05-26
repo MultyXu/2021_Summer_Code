@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.*;
@@ -25,9 +26,12 @@ public class Robot extends TimedRobot {
   public static Shooter shooter; 
   public static Intake intake;
   public static Networktable networktable;
+  public static Climb climb;
 
   public static OI oi;
   private RobotContainer m_robotContainer;
+
+  int i=0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -42,9 +46,13 @@ public class Robot extends TimedRobot {
     judge = new Judge();
     shooter = new Shooter();
     intake = new Intake();
+    climb = new Climb();
     networktable = new Networktable();
+    
 
     oi = new OI();
+
+
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -86,7 +94,28 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+
+    if (i<2){
+      switch(i){
+        case 0:
+          if(base.disDrive(10000, 0, 1000)){
+            i++;
+            base.resetSensor();
+          }
+          break;
+        
+        case 1:
+          if(base.disDrive(0,10000,1000)){
+            i++;
+            base.resetSensor();
+          }
+          break;
+
+        
+      }
+    }
+  }
 
   @Override
   public void teleopInit() {

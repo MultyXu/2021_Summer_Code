@@ -21,6 +21,7 @@ public class Judge extends SubsystemBase{
     public boolean isManualDrive = true;
     public boolean isManualRotate = false;
     public boolean tableOn = false;
+    public boolean isIntaking = false;
 
     // public void isForwardDetecting(){
     //     if (Constants.yValue >= 0){
@@ -33,6 +34,10 @@ public class Judge extends SubsystemBase{
 
     public void changeDriveDirection(){
         isForward=!isForward;
+    }
+
+    public void changeShootState(){
+        isShooting = !isShooting;
     }
 
     public void changeSpeedMode(){
@@ -72,6 +77,14 @@ public class Judge extends SubsystemBase{
             isManualRotate = false;
         }
 
+        if (Robot.oi.motionStick.getRawButton(1)){
+            isShooting=true;
+        } else {
+            isShooting = false;
+        }
+
+        tableOn = Robot.oi.motionStick.getRawButton(11);
+
     }
 
     public void test(){
@@ -93,6 +106,8 @@ public class Judge extends SubsystemBase{
         SmartDashboard.putBoolean("isPreparing", isPreparing);
         SmartDashboard.putBoolean("isManualDrive", isManualDrive);
         SmartDashboard.putBoolean("isManualRotate", isManualRotate);
+        SmartDashboard.putBoolean("isIntaking", isIntaking);
+        SmartDashboard.putBoolean("tableOn", tableOn);
     }
     
 }
