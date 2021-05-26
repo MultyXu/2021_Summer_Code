@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.security.auth.kerberos.KerberosKey;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -11,7 +12,9 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,11 +28,8 @@ public class Base extends SubsystemBase {
   public static TalonFX rightMasterMotor = new TalonFX(Constants.rightMasterMotor);
   public static TalonFX rightSlaveMotor = new TalonFX(Constants.rightSlaveMotor);
 
-  Solenoid rightGearChanger = new Solenoid(Constants.rightGearChanger);
-  Solenoid leftGearChanger = new Solenoid (Constants.leftGearChanger);
-
-  Compressor compressor = new Compressor(1);
-
+  DoubleSolenoid gearChanger = new DoubleSolenoid(0,1,2);
+  
 
   double leftSpeed;
   double rightSpeed;
@@ -129,11 +129,9 @@ public class Base extends SubsystemBase {
 
   public void setSpeedMode(){
     if (Robot.judge.isHighSpeed == true){
-      rightGearChanger.set(true);
-      leftGearChanger.set(true);
+      gearChanger.set(Value.kForward);
     } else {
-      rightGearChanger.set(false);
-      rightGearChanger.set(false);
+      gearChanger.set(Value.kReverse);
     }
   }
 
