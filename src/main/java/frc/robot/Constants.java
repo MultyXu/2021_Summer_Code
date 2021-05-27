@@ -105,7 +105,7 @@ public final class Constants {
  
     //motorspeed/position
     //base
-    public final static int speedConstant = 15000;
+    public final static int speedConstant = 10000;
 
     public static double spinning_value = 200;
     public static double litInput;

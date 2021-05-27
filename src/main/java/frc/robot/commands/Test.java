@@ -10,7 +10,9 @@ import frc.robot.Robot;
 
 public class Test extends CommandBase {
   /** Creates a new Giveball. */
-  public Test() {
+  int tempPos;
+  public Test(int pos) {
+    tempPos = pos;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -21,13 +23,16 @@ public class Test extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Robot.shooter.increaseAngleTest(-19500);
+    Robot.shooter.increaseAngleTest(tempPos);
+
+    
+
 }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // Robot.shooter.angleMotorStop();
+    
   }
 
   // Returns true when the command should end.

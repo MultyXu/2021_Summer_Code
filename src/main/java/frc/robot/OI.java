@@ -26,8 +26,8 @@ public class OI {
         // shootBall.whenHeld(new ShootBall());
         changeDriveMode.whenPressed(new ChangeDriveMode());
         changeDriveDirection.whenPressed(new ChangeDriveDirection());
-        test.whenHeld(new Test());
-        test2.whenHeld(new Test2());
+        test.whenHeld(new Test(28500));
+        test2.whenHeld(new Test(0));
         autoTest.whenPressed(new Forward(0));
         climbTest.whenPressed(new ClimbTest());
     }

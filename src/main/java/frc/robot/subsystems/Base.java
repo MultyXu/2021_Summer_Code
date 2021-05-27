@@ -28,8 +28,9 @@ public class Base extends SubsystemBase {
   public static TalonFX rightMasterMotor = new TalonFX(Constants.rightMasterMotor);
   public static TalonFX rightSlaveMotor = new TalonFX(Constants.rightSlaveMotor);
 
-  DoubleSolenoid gearChanger = new DoubleSolenoid(0,0,1);
+  DoubleSolenoid gearChanger = new DoubleSolenoid(1,4,5);
   
+  Compressor c = new Compressor(1);
 
   double leftSpeed;
   double rightSpeed;
@@ -70,24 +71,24 @@ public class Base extends SubsystemBase {
     setVelocityPID();
     if (Robot.judge.isForward){
       if (y_value<=0){
-        leftSpeed = (-y_value + x_value) * Constants.speedConstant;
-        rightSpeed = (-y_value - x_value) * Constants.speedConstant;
+        leftSpeed = (-y_value*1.3 + x_value) * Constants.speedConstant;
+        rightSpeed = (-y_value*1.3 - x_value) * Constants.speedConstant;
         SmartDashboard.putBoolean("drive test", true);
       } else {
         SmartDashboard.putBoolean("drive test", false);
-        leftSpeed = (-y_value - x_value) * Constants.speedConstant;
-        rightSpeed = (-y_value + x_value) * Constants.speedConstant;
+        leftSpeed = (-y_value*1.3 - x_value) * Constants.speedConstant;
+        rightSpeed = (-y_value*1.3 + x_value) * Constants.speedConstant;
       }
 
     }else{
       if (y_value<=0){
-        leftSpeed = ((y_value + x_value) * Constants.speedConstant);
-        rightSpeed = ((y_value - x_value) * Constants.speedConstant);
+        leftSpeed = ((y_value*1.3 + x_value) * Constants.speedConstant);
+        rightSpeed = ((y_value*1.3 - x_value) * Constants.speedConstant);
         SmartDashboard.putBoolean("drive test", true);
       } else {
         SmartDashboard.putBoolean("drive test", false);
-        leftSpeed = (y_value - x_value) * Constants.speedConstant;
-      rightSpeed = (y_value + x_value) * Constants.speedConstant;
+        leftSpeed = (y_value*1.3 - x_value) * Constants.speedConstant;
+      rightSpeed = (y_value*1.3 + x_value) * Constants.speedConstant;
       }
     } 
     speedSetup();
@@ -217,6 +218,13 @@ public class Base extends SubsystemBase {
       // rightMasterMotor.set(ControlMode.PercentOutput, yValue);
     }
 
+    if (Robot.judge.isHighSpeed == true){
+      gearChanger.set(Value.kForward);
+    } else {
+      gearChanger.set(Value.kReverse);
+    }
     // compressor.enabled();
+  
+
   }
 }

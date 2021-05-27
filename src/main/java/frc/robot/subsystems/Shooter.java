@@ -16,8 +16,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -29,7 +31,7 @@ public class Shooter extends SubsystemBase {
   public static TalonFX ballDeliverMotor = new TalonFX(Constants.ballDeliverMotor);
   public static TalonFX shooterAngleMotor = new TalonFX(Constants.shooterAngleMotor);
 
-  Solenoid ballDeliverSolenoid = new Solenoid(Constants.ballDeliverSolenoid);
+  DoubleSolenoid ballDeliverSolenoid = new DoubleSolenoid(1,6,7);
 
   AnalogPotentiometer shooterAngle = new AnalogPotentiometer(0, 720, 0);
   public int shooterCurrentAngle = 0;
@@ -49,17 +51,17 @@ public class Shooter extends SubsystemBase {
 
     shooterMasterMotor.setNeutralMode(NeutralMode.Coast);
     shooterSlaveMotor.setNeutralMode(NeutralMode.Coast);
-    shooterAngleMotor.setNeutralMode(NeutralMode.Coast);
+    shooterAngleMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   public void startShoot(){
-    ballDeliverSolenoid.set(true);
+    // ballDeliverSolenoid.set(true);
     ballDeliverMotor.set(ControlMode.PercentOutput, 0.1);
     Robot.judge.isShooting = true;
   }
 
   public void stopShoot(){
-    ballDeliverSolenoid.set(false);
+    // ballDeliverSolenoid.set(false);
     ballDeliverMotor.set(ControlMode.PercentOutput, 0);
     Robot.judge.isShooting = false;
   }
@@ -70,29 +72,44 @@ public class Shooter extends SubsystemBase {
   }
 
   public void increaseAngleTest(int _position){
-    if (shooterAngleMotor.getSelectedSensorPosition()<_position+3000){
-      Constants.setFalconPID(shooterAngleMotor, 0, 0.1, 0, 0);
-      shooterAngleMotor.set(ControlMode.Position, _position);
-      SmartDashboard.putBoolean("test", true);
-    } else {
-      Constants.setFalconPID(shooterAngleMotor, 0, 0.02, 0, 0);
-      shooterAngleMotor.set(ControlMode.Position, _position);
-      SmartDashboard.putBoolean("test", false);
-    }
+    Constants.setFalconPID(shooterAngleMotor, 0, 0.018, 0, 0);
+    shooterAngleMotor.set(ControlMode.Position, -_position);
+  }
+
+  public void decreaseAngleTest(int _position){
+    Constants.setFalconPID(shooterAngleMotor, 0, 0.018, 0, 0);
+    shooterAngleMotor.set(ControlMode.Position, _position);
+  }
+
+  public void angleMotorStop(){
+    shooterAngleMotor.set(ControlMode.PercentOutput, 0);
+  }
+
+  public boolean angleTest(int _pos, int speed){
+    Constants.setFalconPID(shooterAngleMotor, 0, 0.1, 0, 0);
+
+        if(Math.abs(shooterAngleMotor.getSelectedSensorPosition())<_pos){
+          shooterAngleMotor.set(ControlMode.Velocity, -speed);
+          return false;
+        } else {
+          shooterAngleMotor.set(ControlMode.Velocity, 0);
+          return true;
+        }
 
 
-}
+  }
 
+  public boolean angleTestdecrease(int _pos, int speed){
+    Constants.setFalconPID(shooterAngleMotor, 0, 0.1, 0, 0);
 
-
-public void decreaseAngleTest(int _position){
-  Constants.setFalconPID(shooterAngleMotor, 0, 0.018, 0, 0);
-  shooterAngleMotor.set(ControlMode.Position, _position);
-}
-
-public void angleMotorStop(){
-  shooterAngleMotor.set(ControlMode.PercentOutput, 0);
-}
+        if(Math.abs(shooterAngleMotor.getSelectedSensorPosition())>_pos){
+          shooterAngleMotor.set(ControlMode.Velocity, speed);
+          return false;
+        } else {
+          shooterAngleMotor.set(ControlMode.Velocity, 0);
+          return true;
+        }
+  }
    
 
  
@@ -102,8 +119,8 @@ public void angleMotorStop(){
     SmartDashboard.putNumber("flywheelVelocity", shooterMasterMotor.getSelectedSensorVelocity());
     if (Robot.judge.isPreparing){
       configVelocityPID();
-      shooterMasterMotor.set(ControlMode.Velocity, 44000);
-      shooterSlaveMotor.set(ControlMode.Velocity, 44000);
+      shooterMasterMotor.set(ControlMode.Velocity, 22000);
+      shooterSlaveMotor.set(ControlMode.Velocity, 22000);
     } else {
       shooterMasterMotor.set(ControlMode.PercentOutput, 0);
       shooterSlaveMotor.set(ControlMode.PercentOutput, 0);
@@ -113,11 +130,33 @@ public void angleMotorStop(){
     SmartDashboard.putNumber("shooterAngleVelocity", shooterAngleMotor.getSelectedSensorVelocity());
     
     if (Robot.judge.isShooting){
-      ballDeliverMotor.set(ControlMode.PercentOutput, 0.1);
+      ballDeliverMotor.set(ControlMode.PercentOutput, 0.2);
+      ballDeliverSolenoid.set(Value.kReverse);
     } else {
       ballDeliverMotor.set(ControlMode.PercentOutput, 0);
+      ballDeliverSolenoid.set(Value.kForward);
     }
 
     shooterCurrentAngle = (int)shooterAngle.get();
-  }
+
+    if (Robot.judge.isManualRotate){
+      if (Robot.oi.motionStick.getPOV()==0){
+        shooterAngleMotor.set(ControlMode.PercentOutput, -0.1);
+      } else if (Robot.oi.motionStick.getPOV()==180){
+        shooterAngleMotor.set(ControlMode.PercentOutput, 0.1);
+      } else {
+        shooterAngleMotor.set(ControlMode.PercentOutput, 0);
+      }
+    } else if (Robot.judge.tableOn){
+      if (Robot.networktable.shooterTargetAngle<-1){
+        shooterAngleMotor.set(ControlMode.PercentOutput, -0.05);
+      } else if (Robot.networktable.shooterTargetAngle>1){
+        shooterAngleMotor.set(ControlMode.PercentOutput, 0.05);
+      } else {
+        shooterAngleMotor.set(ControlMode.PercentOutput, 0);
+      }
+    } else {
+      shooterAngleMotor.set(ControlMode.PercentOutput, 0);
+    }
+  } 
 }

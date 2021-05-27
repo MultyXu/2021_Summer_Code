@@ -22,8 +22,8 @@ public class Networktable extends SubsystemBase {
     NetworkTable sender = inst.getTable("vision");
     NetworkTableEntry isNeeded = sender.getEntry("isNeeded");//send is needed
     NetworkTableEntry shooterAngle = sender.getEntry("shooterAngle");//send shooter angle
-    NetworkTableEntry shooterAdjustAngle = sender.getEntry("toss_adjustment");//读取视觉角度 （炮台需要调整的角度）
-    NetworkTableEntry fortAdjustAngle = sender.getEntry("a_adjustment");//读取车需要横向移动的距离
+    NetworkTableEntry shooterAdjustAngle = sender.getEntry("toss_adjustment");//读取视觉角度 （shooter需要调整的角度）
+    NetworkTableEntry fortAdjustAngle = sender.getEntry("a_adjustment");//读取炮台需要转动角度
     NetworkTableEntry targetDistance = sender.getEntry("distance");//读取车距离洞口的距离
 
     public int shooterTargetAngle;

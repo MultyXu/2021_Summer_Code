@@ -20,7 +20,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new SpinningCollect. */
   public static TalonFX intakeMotor = new TalonFX(Constants.intakeMotor);
 
-  DoubleSolenoid intakeSolenoid = new DoubleSolenoid(1,0,1);
+  DoubleSolenoid intakeSolenoid = new DoubleSolenoid(0,0,1);
   public Intake() {
     Constants.initFalconPID(intakeMotor, 1);
   }
@@ -42,11 +42,11 @@ public class Intake extends SubsystemBase {
     if (Robot.oi.motionStick.getRawButton(2)){
       intakeMotor.set(ControlMode.PercentOutput, -0.5);
       Robot.judge.isIntaking = true;
-      intakeSolenoid.set(Value.kForward);
+      intakeSolenoid.set(Value.kReverse);
     } else {
       intakeMotor.set(ControlMode.PercentOutput, 0);
       Robot.judge.isIntaking = false;
-      intakeSolenoid.set(Value.kReverse);
+      intakeSolenoid.set(Value.kForward);
     }
   }
 }

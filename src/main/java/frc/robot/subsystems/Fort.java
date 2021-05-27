@@ -46,7 +46,7 @@ public class Fort extends SubsystemBase {
 
 
   public void setPositionPID(){
-    Constants.setFalconPID(fortController, 0, 0, 0, 0);
+    Constants.setFalconPID(fortController, 0, 0.01, 0, 0);
 
   }
 
@@ -73,20 +73,33 @@ public class Fort extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if (Robot.judge.isManualRotate){
-      if (Robot.oi.motionStick.getPOV()==0){
-        rotateFort(0.2);
-      } else if (Robot.oi.motionStick.getPOV()==180){
-        rotateFort(-0.2);
+      if (Robot.oi.motionStick.getPOV()==270){
+        rotateFort(0.1);
+      } else if (Robot.oi.motionStick.getPOV()==90){
+        rotateFort(-0.1);
       } else {
         rotateFort(0);
       }
+    } else if (Robot.judge.tableOn){
+      if (Robot.networktable.fortTargetAngle >1){
+        rotateFort(-0.1);
+      } else if (Robot.networktable.fortTargetAngle <-1){
+        rotateFort(0.1);
+      } else {
+        rotateFort(0);
+      }
+    } else {
+      rotateFort(0);
     }
+
+
     SmartDashboard.putNumber("POV", Robot.oi.motionStick.getPOV());
+    SmartDashboard.putNumber("fortPos", fortController.getSelectedSensorPosition());
 
     if (Robot.judge.isShooting){
-      rotateMotor.set(ControlMode.PercentOutput, 0.3);
+      rotateMotor.set(ControlMode.PercentOutput, 0.2);
     } else if (Robot.judge.isIntaking){
-      rotateMotor.set(ControlMode.PercentOutput, 0.3);
+      rotateMotor.set(ControlMode.PercentOutput, 0.2);
     } else {
       rotateMotor.set(ControlMode.PercentOutput, 0);
     }
