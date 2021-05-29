@@ -12,7 +12,7 @@ import frc.robot.commands.*;
 /** Add your docs here. */
 public class OI {
     public static Joystick motionStick = new Joystick(Constants.motionJoystick);
-    public static Joystick rotateStick = new Joystick(Constants.rotateJoystick);
+    public static Joystick rotateStick = new Joystick(1);    
     public JoystickButton shootBall = new JoystickButton(motionStick, 1);
     public JoystickButton intake = new JoystickButton(motionStick, 2);
     public JoystickButton changeDriveMode = new JoystickButton(motionStick, 3);

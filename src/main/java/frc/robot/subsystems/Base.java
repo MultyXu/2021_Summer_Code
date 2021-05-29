@@ -66,16 +66,12 @@ public class Base extends SubsystemBase {
   // }
 
   public void drive(double x_value, double y_value) {
-    SmartDashboard.putNumber("x", x_value);
-    SmartDashboard.putNumber("y", y_value);
     setVelocityPID();
     if (Robot.judge.isForward){
       if (y_value<=0){
         leftSpeed = (-y_value*1.3 + x_value) * Constants.speedConstant;
         rightSpeed = (-y_value*1.3 - x_value) * Constants.speedConstant;
-        SmartDashboard.putBoolean("drive test", true);
       } else {
-        SmartDashboard.putBoolean("drive test", false);
         leftSpeed = (-y_value*1.3 - x_value) * Constants.speedConstant;
         rightSpeed = (-y_value*1.3 + x_value) * Constants.speedConstant;
       }
@@ -84,9 +80,7 @@ public class Base extends SubsystemBase {
       if (y_value<=0){
         leftSpeed = ((y_value*1.3 + x_value) * Constants.speedConstant);
         rightSpeed = ((y_value*1.3 - x_value) * Constants.speedConstant);
-        SmartDashboard.putBoolean("drive test", true);
       } else {
-        SmartDashboard.putBoolean("drive test", false);
         leftSpeed = (y_value*1.3 - x_value) * Constants.speedConstant;
       rightSpeed = (y_value*1.3 + x_value) * Constants.speedConstant;
       }
@@ -174,7 +168,8 @@ public class Base extends SubsystemBase {
   }
   public void test(){
     SmartDashboard.putNumber("i", i);
-    if (i<2){
+    if (i<4){
+      Robot.judge.isIntaking = true;
       switch(i){
         case 0:
           if(disDrive(10000, 0, 1000)){
@@ -189,6 +184,15 @@ public class Base extends SubsystemBase {
             resetSensor();
           }
           break;    
+
+        case 2:
+          if(Robot.fort.autoFortTest() && Robot.shooter.autoShooterTest()){
+            i++;
+          }
+          break;
+
+        case 3:
+          Robot.judge.isShooting = true;
       }
     }
   }
@@ -207,7 +211,6 @@ public class Base extends SubsystemBase {
     SmartDashboard.putNumber("left Position", leftMasterMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("right Position", leftMasterMotor.getSelectedSensorPosition());
 
-    SmartDashboard.putNumber("xValue", Robot.oi.motionStick.getRawAxis(1));
 
     //drfault drive
     double xValue = Robot.judge.deadBand(Robot.oi.motionStick.getX());
@@ -222,6 +225,15 @@ public class Base extends SubsystemBase {
       gearChanger.set(Value.kForward);
     } else {
       gearChanger.set(Value.kReverse);
+    }
+
+    if (Robot.judge.isShooting){
+      leftMasterMotor.setNeutralMode(NeutralMode.Brake);
+      rightMasterMotor.setNeutralMode(NeutralMode.Brake);
+
+    } else { 
+      leftMasterMotor.setNeutralMode(NeutralMode.Coast);
+      rightMasterMotor.setNeutralMode(NeutralMode.Coast);
     }
     // compressor.enabled();
   

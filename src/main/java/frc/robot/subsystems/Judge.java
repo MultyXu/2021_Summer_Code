@@ -17,11 +17,12 @@ public class Judge extends SubsystemBase{
     public boolean isTargeting = false;
     public boolean isHighSpeed = true;
     public boolean isRotating = false;
-    public boolean isPreparing = false;
+    public boolean isPreparing = true;
     public boolean isManualDrive = true;
     public boolean isManualRotate = false;
     public boolean tableOn = false;
     public boolean isIntaking = false;
+    public boolean isReady = false;
 
     // public void isForwardDetecting(){
     //     if (Constants.yValue >= 0){
@@ -71,13 +72,13 @@ public class Judge extends SubsystemBase{
             isPreparing = false;
         }
 
-        if (Robot.oi.motionStick.getRawButton(7)){
+        if (Robot.oi.rotateStick.getRawButton(7)){
             isManualRotate = true;
         } else {
             isManualRotate = false;
         }
 
-        if (Robot.oi.motionStick.getRawButton(1)){
+        if (Robot.oi.rotateStick.getRawButton(1)){
             isShooting=true;
         } else {
             isShooting = false;
@@ -85,14 +86,20 @@ public class Judge extends SubsystemBase{
 
         tableOn = Robot.oi.motionStick.getRawButton(11);
 
+        if (Robot.shooter.shooterMasterMotor.getSelectedSensorVelocity()>15000){
+            isReady = true;
+        } else {
+            isReady = false;
+        }
+
     }
 
     public void test(){
-        if (OI.motionStick.getRawButton(1) == true){
-            SmartDashboard.putBoolean("test", true);
-        } else {
-            SmartDashboard.putBoolean("test", false);
-        }
+        // if (OI.motionStick.getRawButton(1) == true){
+        //     SmartDashboard.putBoolean("test", true);
+        // } else {
+        //     SmartDashboard.putBoolean("test", false);
+        // }
     }
 
     @Override

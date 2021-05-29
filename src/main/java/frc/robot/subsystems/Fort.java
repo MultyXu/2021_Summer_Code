@@ -69,21 +69,34 @@ public class Fort extends SubsystemBase {
     fortController.set(ControlMode.Position, _position);
   }
 
+  public boolean autoFortTest(){
+    if (Robot.networktable.x >1){
+      rotateFort(-0.1);
+      return false;
+    } else if (Robot.networktable.x <-1){
+      rotateFort(0.1);
+      return false;
+    } else {
+      rotateFort(0);
+      return true;
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     if (Robot.judge.isManualRotate){
-      if (Robot.oi.motionStick.getPOV()==270){
+      if (Robot.oi.rotateStick.getPOV()==270){
         rotateFort(0.1);
-      } else if (Robot.oi.motionStick.getPOV()==90){
+      } else if (Robot.oi.rotateStick.getPOV()==90){
         rotateFort(-0.1);
       } else {
         rotateFort(0);
       }
     } else if (Robot.judge.tableOn){
-      if (Robot.networktable.fortTargetAngle >1){
+      if (Robot.networktable.x >1){
         rotateFort(-0.1);
-      } else if (Robot.networktable.fortTargetAngle <-1){
+      } else if (Robot.networktable.x <-1){
         rotateFort(0.1);
       } else {
         rotateFort(0);
@@ -96,15 +109,7 @@ public class Fort extends SubsystemBase {
     SmartDashboard.putNumber("POV", Robot.oi.motionStick.getPOV());
     SmartDashboard.putNumber("fortPos", fortController.getSelectedSensorPosition());
 
-    if (Robot.judge.isShooting){
-      rotateMotor.set(ControlMode.PercentOutput, 0.2);
-    } else if (Robot.judge.isIntaking){
-      rotateMotor.set(ControlMode.PercentOutput, 0.2);
-    } else {
-      rotateMotor.set(ControlMode.PercentOutput, 0);
-    }
-
-
+    rotateMotor.set(ControlMode.PercentOutput, 0.2);
   }
 
 

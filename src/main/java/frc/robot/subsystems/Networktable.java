@@ -11,26 +11,32 @@ import edu.wpi.first.wpilibj.Talon;
 
 import edu.wpi.first.networktables.*;
 import frc.robot.Robot;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Networktable extends SubsystemBase {
 
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTableInstance inst1 = NetworkTableInstance.getDefault();
     // modify needed check the networktale entry nuner
   
     NetworkTable sender = inst.getTable("vision");
-    NetworkTableEntry isNeeded = sender.getEntry("isNeeded");//send is needed
-    NetworkTableEntry shooterAngle = sender.getEntry("shooterAngle");//send shooter angle
-    NetworkTableEntry shooterAdjustAngle = sender.getEntry("toss_adjustment");//读取视觉角度 （shooter需要调整的角度）
-    NetworkTableEntry fortAdjustAngle = sender.getEntry("a_adjustment");//读取炮台需要转动角度
-    NetworkTableEntry targetDistance = sender.getEntry("distance");//读取车距离洞口的距离
+    NetworkTable limeLight = inst1.getTable("limelight");
+    NetworkTableEntry tv = limeLight.getEntry("tv"); 
+    NetworkTableEntry tx = limeLight.getEntry("tx"); 
+    NetworkTableEntry ty = limeLight.getEntry("ty"); 
+    NetworkTableEntry ta = limeLight.getEntry("ta"); 
+
 
     public int shooterTargetAngle;
     public int fortTargetAngle;
-    public int distance;
 
-    double x =0;//isNeeded
+    public double v = 0.0;
+    public double x = 0.0;
+    public double y = 0.0;
+    public double a = 0.0;
+    public double distance = 0.0;
+
+    public double angle = 0.0;
 
   public Networktable() {
     inst.startClientTeam(7280);
@@ -39,17 +45,17 @@ public class Networktable extends SubsystemBase {
 
   public void getTableData() {
 
-    shooterTargetAngle = (int)shooterAdjustAngle.getDouble(3.0);
-    fortTargetAngle = (int)fortAdjustAngle.getDouble(3.0);
-    distance = (int)targetDistance.getDouble(3.0);
+    v = tv.getDouble(0.0);
+    x = tx.getDouble(0.0);
+    y = ty.getDouble(0.0);
+    a = ta.getDouble(0.0);
 
-    if(Robot.judge.tableOn){
-      x = 1.0;
-    } else {
-      x=0.0;
+    angle = Robot.shooter.shooterCurrentAngle;
+    if (v ==0){
+      distance = (2.32-0.70859*(1+0.31439)*Math.sin(angle))/Math.tan(-y*2*Math.PI/360+(90-angle)*2*Math.PI/360);
     }
-    isNeeded.setDouble(x);
-    shooterAngle.setDouble(Robot.shooter.shooterCurrentAngle);
+
+    
   }
 
   @Override
@@ -57,11 +63,16 @@ public class Networktable extends SubsystemBase {
     // This method will be called once per scheduler run
     getTableData();
 
-    SmartDashboard.putNumber("shooter", shooterTargetAngle);
-    SmartDashboard.putNumber("fort", fortTargetAngle);
-    SmartDashboard.putNumber("base", distance);
-    SmartDashboard.putNumber("tableTable", x);
+    // SmartDashboard.putNumber("shooter", shooterTargetAngle);
+    // SmartDashboard.putNumber("fort", fortTargetAngle);
+    // SmartDashboard.putNumber("base", distance);
+    // SmartDashboard.putNumber("tableTable", x);
 
     //show data
+    SmartDashboard.putNumber("tv", v);
+    SmartDashboard.putNumber("tx", x);
+    SmartDashboard.putNumber("ty", y);
+    SmartDashboard.putNumber("ta", a);
+    SmartDashboard.putNumber("distance", distance);
   }
 }

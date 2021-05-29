@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
@@ -33,7 +34,9 @@ public class Shooter extends SubsystemBase {
 
   DoubleSolenoid ballDeliverSolenoid = new DoubleSolenoid(1,6,7);
 
-  AnalogPotentiometer shooterAngle = new AnalogPotentiometer(0, 720, 0);
+  AnalogPotentiometer shooterAngle = new AnalogPotentiometer(0, 360, 0);
+  DigitalInput reseter = new DigitalInput(0);
+
   public int shooterCurrentAngle = 0;
 
   public int targetPosition;
@@ -67,8 +70,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void configVelocityPID(){
-    Constants.setFalconPID(shooterMasterMotor, 0, 0.1, 0, 0);
-    Constants.setFalconPID(shooterSlaveMotor, 0, 0.1, 0, 0);
+    Constants.setFalconPID(shooterMasterMotor, 0, 0.4, 0, 0);
+    Constants.setFalconPID(shooterSlaveMotor, 0, 0.4, 0, 0);
   }
 
   public void increaseAngleTest(int _position){
@@ -110,24 +113,48 @@ public class Shooter extends SubsystemBase {
           return true;
         }
   }
+
+  public boolean autoShooterTest(){
+    if (Robot.networktable.shooterTargetAngle<-1){
+      shooterAngleMotor.set(ControlMode.PercentOutput, -0.05);
+      return false;
+    } else if (Robot.networktable.shooterTargetAngle>1){
+      shooterAngleMotor.set(ControlMode.PercentOutput, 0.05);
+      return false;
+    } else {
+      shooterAngleMotor.set(ControlMode.PercentOutput, 0);
+      return true;
+    }
+  }
    
 
  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
     SmartDashboard.putNumber("flywheelVelocity", shooterMasterMotor.getSelectedSensorVelocity());
     if (Robot.judge.isPreparing){
-      configVelocityPID();
-      shooterMasterMotor.set(ControlMode.Velocity, 22000);
-      shooterSlaveMotor.set(ControlMode.Velocity, 22000);
+      if (Robot.judge.isReady){
+        Constants.setFalconPID(shooterMasterMotor, 0, 0.4, 0, 0);
+        Constants.setFalconPID(shooterSlaveMotor, 0, 0.4, 0, 0);
+        shooterMasterMotor.set(ControlMode.Velocity, 22000);
+        shooterSlaveMotor.set(ControlMode.Velocity, 22000);
+      } else {
+        Constants.setFalconPID(shooterMasterMotor, 0, 0.4, 0, 0);
+        Constants.setFalconPID(shooterSlaveMotor, 0, 0.4, 0, 0);
+        shooterMasterMotor.set(ControlMode.Velocity, 22000);
+        shooterSlaveMotor.set(ControlMode.Velocity, 22000);
+      }
     } else {
       shooterMasterMotor.set(ControlMode.PercentOutput, 0);
       shooterSlaveMotor.set(ControlMode.PercentOutput, 0);
     }
-    SmartDashboard.putNumber("flywheelTargetVelocity", 5000);
+
     SmartDashboard.putNumber("shooterAnglePosition", shooterAngleMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("shooterAngleVelocity", shooterAngleMotor.getSelectedSensorVelocity());
+
+    SmartDashboard.putNumber("angle", shooterCurrentAngle);
     
     if (Robot.judge.isShooting){
       ballDeliverMotor.set(ControlMode.PercentOutput, 0.2);
@@ -137,12 +164,16 @@ public class Shooter extends SubsystemBase {
       ballDeliverSolenoid.set(Value.kForward);
     }
 
-    shooterCurrentAngle = (int)shooterAngle.get();
+    if (shooterAngle.get()<150){
+      shooterCurrentAngle = ((int)shooterAngle.get()+360-164)*18/60;
+    } else{
+      shooterCurrentAngle = ((int)shooterAngle.get()-164)*18/60;
+    }
 
     if (Robot.judge.isManualRotate){
-      if (Robot.oi.motionStick.getPOV()==0){
+      if (Robot.oi.rotateStick.getPOV()==0){
         shooterAngleMotor.set(ControlMode.PercentOutput, -0.1);
-      } else if (Robot.oi.motionStick.getPOV()==180){
+      } else if (Robot.oi.rotateStick.getPOV()==180){
         shooterAngleMotor.set(ControlMode.PercentOutput, 0.1);
       } else {
         shooterAngleMotor.set(ControlMode.PercentOutput, 0);
