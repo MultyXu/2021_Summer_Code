@@ -1,3 +1,3 @@
 # 2021_Summer_Code
 
-Hello 
+First Robotics Competition, summer session.
